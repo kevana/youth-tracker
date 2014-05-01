@@ -46,6 +46,7 @@ class Event(ObjectBase):
     '''Events that have destroyed my youthful optimism.'''
     def __init__(self, title="", description="", youth=""):
         '''Init class with values.'''
+        self.id = id(self)
         self.title = title
         self.description = description
         self.youth = youth
@@ -53,17 +54,19 @@ class Event(ObjectBase):
 class Hook(ObjectBase):
     '''Hooks for new event creation.'''
     def __init__(self, url=""):
+        self.id = id(self)
         self.url = url
 
 
 def make_public_event(event):
     '''Return event with id field replaced with URI.'''
+    old_event = event.__dict__
     new_event = {}
-    for field in event.__dict__:
+    for field in old_event:
         if field == 'id':
-            new_event['uri'] = url_for('get_event', event_id = event['id'], _external = True)
+            new_event['uri'] = url_for('get_event', event_id = old_event['id'], _external = True)
         else:
-            new_event[field] = event[field]
+            new_event[field] = old_event[field]
     return new_event
     
 @app.route('/youth-tracker/api/v1.0/events', methods = ['GET'])
