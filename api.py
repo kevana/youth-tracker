@@ -1,4 +1,3 @@
-#!flask/bin/python
 from flask import Flask, jsonify, abort, request, make_response, url_for
 from flask.ext.httpauth import HTTPBasicAuth
 
@@ -77,7 +76,7 @@ def get_events():
 @app.route('/youth-tracker/api/v1.0/events/<int:event_id>', methods = ['GET'])
 def get_event(event_id):
     '''Return event with id:event_id or 404 if not found.'''
-    event = filter(lambda t: t['id'] == event_id, events)
+    event = filter(lambda t: t.id == event_id, events)
     if len(event) == 0:
         abort(404)
     return jsonify( { 'event': make_public_event(event[0]) } )
@@ -107,7 +106,7 @@ def update_event(event_id):
         abort(400)
     if 'description' in request.json and type(request.json['description']) is not unicode:
         abort(400)
-    if 'youth' in request.json and type(request.json['youth']) is not bool:
+    if 'youth' in request.json and type(request.json['youth']) is not unicode:
         abort(400)
     event[0].title = request.json.get('title', event[0].title)
     event[0].description = request.json.get('description', event[0].description)
